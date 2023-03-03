@@ -12,8 +12,17 @@ fn main() {
         } else {
             println!("{:?} ({})\r", b, c);
         }
-        if c == 'q' {
+        if b == to_ctrl_byte('q') {
             break;
         }
     }
+}
+
+fn to_ctrl_byte(c: char) -> u8 {
+    let byte = c as u8;
+    return byte & 0b0001_1111;
+}
+
+fn die(e: std::io::Error) {
+    panic!("{}", e);
 }
