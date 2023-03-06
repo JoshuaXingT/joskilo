@@ -1,3 +1,4 @@
+use crate::Position;
 use crate::Row;
 use std::fs;
 #[derive(Default)]
@@ -26,5 +27,22 @@ impl Document {
     }
     pub fn len(&self) -> usize {
         self.rows.len()
+    }
+    pub fn insert(&mut self, at_pos: &Position, chr: char) {
+        if at_pos.y == self.len() {
+            let mut row = Row::default();
+            row.insert(0, chr);
+            self.rows.push(row);
+        } else if at_pos.y < self.len() {
+            let row = self.rows.get_mut(at_pos.y).unwrap();
+            row.insert(at_pos.x, chr);
+        }
+    }
+    pub fn delete(&mut self, at_pos: &Position) {
+        if at_pos.y == self.len() {
+            return;
+        }
+        let row = self.rows.get_mut(at_pos.y).unwrap();
+        row.delete(at_pos.x);
     }
 }
