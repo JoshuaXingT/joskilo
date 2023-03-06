@@ -152,6 +152,19 @@ impl Editor {
                 self.move_cursor(Key::Right);
             }
             Key::Delete => self.document.delete(&self.cursor_pos),
+            Key::Backspace => {
+                if self.cursor_pos.x > 0 || self.cursor_pos.y > 0 {
+                    self.move_cursor(Key::Left);
+                    self.document.delete(&self.cursor_pos);
+                }
+            }
+            Key::Ctrl('s') => {
+                if self.document.save().is_ok() {
+                    self.status_msg = StatusMsg::from("File saved successfully!!".to_string());
+                } else {
+                    self.status_msg = StatusMsg::from("File saved fail!!".to_string());
+                }
+            }
             Key::Up
             | Key::Down
             | Key::Left
@@ -247,7 +260,7 @@ impl Editor {
     }
     pub fn default() -> Self {
         let args: Vec<String> = env::args().collect();
-        let mut initial_status = String::from("Help: Ctrl+Q = quit");
+        let mut initial_status = String::from("Help: Ctrl+S = save | Ctrl+Q = quit");
         let document = if args.len() > 1 {
             let filename = &args[1];
             let doc = Document::open(&filename);
